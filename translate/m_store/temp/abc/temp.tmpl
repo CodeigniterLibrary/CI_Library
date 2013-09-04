@@ -1,0 +1,346 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link href="css/zigbee.css" rel="stylesheet" type="text/css">
+<TITLE><{$title}></TITLE>
+
+<{$srcAllJSfile}>
+<script language="JavaScript">
+function popup(str)
+{
+
+		document.mainform.cmd.value="list";
+		document.mainform.topopt.value=str;
+		window.showModalDialog("fileupload.php?cmd=list&topopt="+str,window,"dialogHeight: 320px; dialogWidth: 480px; edge: sunken; center: Yes; help: No; resizable: No; status: No;");	
+		//window.open("popup.php?cmd=ser&topopt="+str)
+	
+}
+function gotoPage(pageIndex)
+{
+	var msg="";
+	if(document.mainform.sea_begin_id.value!="" && !chkvalidnumberbase(document.mainform.sea_begin_id.value,""))
+	{
+		msg+=getmsg("ShopIdWrong");
+	}
+	if(document.mainform.sea_end_id.value!="" && !chkvalidnumberbase(document.mainform.sea_end_id.value,""))
+	{
+		msg+=getmsg("ShopIdWrong");
+	}
+	if(document.mainform.sea_name.value!="" && (!chkword(document.mainform.sea_name.value,10)))
+	{
+		msg+=getmsg("ShopNameWrong");
+	}
+	if(document.mainform.sea_duty.value!="" && (!chkword(document.mainform.sea_duty.value,24)))
+	{
+		msg+=getmsg("ShopDutyWrong");
+	}
+	if(msg!="")
+	{
+		alert(msg);
+		return false;
+	}
+	var obj=document.getElementsByName('checkbox_select[]');
+	//alert(document.mainform.art_st_select.value);
+	for(j=0;j<obj.length;j++)
+	{
+		
+		var aa=document.mainform.art_st_select.value.split("|");
+		var addflg="yes";		
+		for(i=0;i<aa.length;i++)
+		{
+			if(obj[j].checked==true)
+			{	
+				if(aa[i]==obj[j].value)	
+				{
+					addflg="no";	
+				}						
+			}
+			else if(obj[j].checked!=true)
+			{	
+				addflg="no";
+				if(aa[i]==obj[j].value)	
+				{
+					var aaa=new Array();				
+					for(k=0;k<i;k++)
+					{
+						aaa[k]=aa[k];
+					}
+					for(k=i+1;k<aa.length;k++)
+					{
+						aaa[k-1]=aa[k]
+					}
+					document.mainform.art_st_select.value=aaa.join("|");
+				}		
+			}
+		}
+		if(addflg=="yes")
+		{
+			if(document.mainform.art_st_select.value=="")
+			{
+				document.mainform.art_st_select.value=obj[j].value;
+			}
+			else
+			{
+				document.mainform.art_st_select.value=document.mainform.art_st_select.value+"|"+obj[j].value;
+			}
+		}
+		
+	}
+	
+	docuObj=document.mainform;
+	docuObj.currentPage.value=pageIndex;
+	docuObj.topopt.value="gotopage";
+	docuObj.submit();
+}
+function sendorder(index)
+{
+	if(index=="edit" || index=="add_again" )
+	{		
+	var obj=document.getElementsByName("checkbox_select[]");
+		var tmp=0;
+		for(i=0;i<obj.length;i++)
+		{
+			if(obj[i].checked)
+			{
+				tmp=tmp+1;
+			}
+		}
+		if(tmp!=1&&tmp<1)
+		{
+			alert(getmsg("ChooseEmpty"));
+			return false;
+		}else if(tmp>1)
+		{
+			alert(getmsg("ChooseMore"));
+			return false;
+		}
+
+		
+	
+	}
+	else if(index=="delete")
+	{
+		var obj=document.getElementsByName("checkbox_select[]");		
+		var tmp=0; //统计checkbox的个数
+		for(i=0;i<obj.length;i++)//checkbox循环
+		{			
+			if(obj[i].checked)
+			{
+				tmp=tmp+1;
+				
+			}
+		}
+		if(tmp!=1&&tmp<1)
+		{	
+			alert(getmsg("ChooseEmpty"));//提示选择为空
+			return false;
+		}
+		if(index=="delete" && !window.confirm(getmsg("DeleteSure")))//确定<{$resources.common_del}>
+		{
+			return false;
+		}
+		var obj=document.getElementsByName('checkbox_select[]');
+		for(j=0;j<obj.length;j++)
+		{			
+			var aa=document.mainform.art_st_select.value.split("|");//
+			var addflg="yes";
+			for(i=0;i<aa.length;i++)
+			{
+				if(obj[j].checked==true)
+				{
+					if(aa[i]==obj[j].value)
+					{
+						addflg="no";
+					}
+				}
+				else if(obj[j].checked!=true)
+				{
+					addflg="no";
+					if(aa[i]==obj[j].value)
+					{
+						var aaa=new Array();
+						for(k=0;k<i;k++)
+						{
+							aaa[k]=aa[k];
+						}
+						for(k=i+1;k<aa.length;k++)
+						{
+							aaa[k-1]=aa[k]
+						}
+						document.mainform.art_st_select.value=aaa.join("|");
+					}
+				}
+			}
+			if(addflg=="yes")
+			{
+				if(document.mainform.art_st_select.value=="")
+				{
+					document.mainform.art_st_select.value=obj[j].value;
+				}
+				else
+				{
+					document.mainform.art_st_select.value=document.mainform.art_st_select.value+"|"+obj[j].value;
+				}
+			}
+		}
+	}
+	else if(index=="search")
+	{
+		var msg="";
+		if(document.mainform.sea_begin_id.value!="" && !chkvalidnumberbase(document.mainform.sea_begin_id.value,""))
+		{
+			msg+=getmsg("ShopIdWrong");
+		}
+		if(document.mainform.sea_end_id.value!="" && !chkvalidnumberbase(document.mainform.sea_end_id.value,""))
+		{
+			msg+=getmsg("ShopIdWrong");
+		}
+		if(document.mainform.sea_name.value!="" && (!chkword(document.mainform.sea_name.value,10)))
+		{
+			msg+=getmsg("ShopNameWrong");
+		}
+		if(document.mainform.sea_duty.value!="" && (!chkword(document.mainform.sea_duty.value,24)))
+		{
+			msg+=getmsg("ShopDutyWrong");
+		}
+		if(msg!="")
+		{
+			alert(msg);
+			return false;
+		}
+	}
+	else if(index=="back")
+	{
+		document.mainform.action="blank.php";
+	}
+	else if(index=="download")
+	{
+		
+	}
+	document.mainform.topopt.value=index;
+	document.mainform.submit();
+}
+
+function ShowCheckSelect()
+{	
+	var aa=document.mainform.art_st_select.value.split("|");
+	var obj=document.getElementsByName('checkbox_select[]');
+	for(j=0;j<obj.length;j++)
+	{
+		for(i=0;i<aa.length;i++)
+		{
+			if(aa[i]==obj[j].value)
+			{
+				obj[j].checked=true;
+			}
+		}
+	}
+}
+
+function AddZero23(obj)
+{
+	if(!chkvalidnumberbase(obj.value,""))
+	{
+		alert(getmsg("ShopIdWrong"));
+		return false;
+	}
+	else
+	{
+		AddZero(obj,4);
+	}
+}
+</script>
+</head>
+<body topmargin="0" onload="javascript:ShowCheckSelect();">
+<form name="mainform" method="post" action="m_store.php" enctype="multipart/form-data"> 
+<input type="hidden" name="cmd" value="list">
+<input type="hidden" name="topopt" value="">
+<input type="hidden" name="currentPage" value="<{$cp|default:'1'}>">
+<INPUT type="hidden" name="csvName" value="">
+<input type="hidden" name="art_st_select" value="<{$art_st_select}>">
+<{include file="head.tmpl"}>
+<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" class="color3">
+  <tr> 
+    <td height="20">&nbsp;</td>
+  </tr>
+  <tr > 
+    <td valign="top"> 
+<table width="77%" border="0" align="center" cellpadding="0" cellspacing="1"  class="border2">
+  <tr>
+     <td class="bg" colspan="2" height="30"><font class="bluenew">&nbsp;<{$resources.shop_seek}></font>
+     </td>
+  </tr>
+  <tr>
+    <td>
+       <table align="center" cellpadding="0" cellspacing="1" class="border3" width="100%">
+          <tr>
+           <td class="color8" width="22%"><font class="yellow">&nbsp;<{$resources.shop_id}></font></td>
+           <td class="color9">
+              <input type="text" size="20" maxlength="4" onBlur="AddZero23(this)" name="sea_begin_id" value="<{$sea_begin_id}>" style="ime-mode:disabled">～<input type="text" size="20" maxlength="4" onBlur="AddZero23(this)" name="sea_end_id" value="<{$sea_end_id}>" style="ime-mode:disabled"></td>
+          </tr>
+          <tr>
+           <td class="color8"><font class="yellow">&nbsp;<{$resources.shop_name}></font></td>
+           <td class="color9">
+              <input type="text" size="40" maxlength="50"  value="<{$sea_name}>" name="sea_name"></td>
+          </tr>
+          <tr>
+            <td class="color8"><font class="yellow">&nbsp;<{$resources.shop_manageer}></font></td>
+            <td class="color9">
+              <input type="text" size="40" maxlength="20" value="<{$sea_duty}>" name="sea_duty"></td>
+          </tr>
+          <tr>
+            <td colspan=2 align="center" class="color9" height="35"><input name="button" type="button" class="submit1" onClick="javascript:sendorder('search')" value="<{$resources.common_search}>"></td>
+          </tr>
+       </table>
+      </td>
+  </tr>
+</table>
+<br> 
+<table width="77%" border="0" align="center" cellpadding="0" cellspacing="1"  class="border2">
+    <tr> 
+      <td width="3%" align="center"  class="color8" height="24"><input type="checkbox" name="check_all" onClick="javascript:SelectAll('checkbox_select[]');"></td>
+      <td align="center" class="color8" width="12%"><font class="bluenew"><{$resources.shop_id}></font></td>
+      <td align="center" class="color8" width="25%"><font class="bluenew"><{$resources.shop_name}></font></td>
+      <td align="center" class="color8" width="10%"><font class="bluenew"><{$resources.shop_sort}></font></td>
+      <td align="center" class="color8" width="10%"><font class="bluenew"><{$resources.shop_style}></font></td>
+      <td align="center" class="color8" width="40%"><font class="bluenew"><{$resources.shop_manageer}></font></td>
+    </tr>
+    <tr> 
+      <td colspan="7">
+        <table align="center" cellpadding="0" cellspacing="1" width="100%">
+          <{section name="loop" loop=$resdata}>
+						<tr <{if $smarty.section.loop.index%2 eq 1}>class="color13"<{else}>class="color12"<{/if}>>
+							<td align="center" width="3%"><input type="checkbox" name="checkbox_select[]" value="<{$resdata[loop].id}>" onClick="javascript:checkItem('check_all');"></td>
+							<td align="left" width="12%"><{$resdata[loop].id}></td>
+							<td align="left" width="25%"><{$resdata[loop].name}></td>
+							<td align="right" width="10%"><{$resdata[loop].sort}></td>
+							<td align="left" width="10%"><{$resdata[loop].type}></td>
+							<td align="left" width="40%"><{$resdata[loop].duty}></td>
+						</tr>	
+					<{/section}>
+        </table>
+	   </td>
+   </tr>
+</table>
+<table class="color3" align="center" border="0" cellpadding="0" cellspacing="0" width="77%">
+	<tr>
+	   <td colspan="7" align="right"><{$splitPageStr}></td>
+	</tr>
+  <tr>
+	   <td  ><input type="button" value="<{$resources.common_new}>" class="submitlist" onClick="javascript:sendorder('add')"></td>		
+	   <td ><input type="button" value="<{$resources.common_update}>" class="submitlist" onClick="javascript:sendorder('edit')"></td>
+	   <td ><input type="button" value="<{$resources.common_copy}>" class="submitlist" onClick="javascript:sendorder('add_again')"></td>
+	   <td><input type="button" value="<{$resources.common_del}>" class="submitlist" onClick="javascript:sendorder('delete')"></td>
+	   <td ><input type="button" value="<{$resources.common_output}>" class="submitlist" onClick="javascript:sendorder('download')"></td>	
+	   <td><input type="button" value="<{$resources.common_input}>" class="submitlist" onClick="javascript:popup('store')"></td>		
+	   <td ><input type="button" value="<{$resources.common_back}>" class="submitlist"  onclick="javascript:sendorder('back')"></td>
+   </tr>
+</table>
+</td>
+</tr>
+</table>
+<{include file="foot.tmpl"}>
+</form>
+</body>
+</html>

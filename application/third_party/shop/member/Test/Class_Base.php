@@ -1,0 +1,1 @@
+<?phpnamespace Shop\Member\Test;class Class_Base {	public function do_load() {}		protected function __construct()	{		echo 'Shop\Member\Article\Test\Class_Base';	}}/*  */

@@ -1,0 +1,1 @@
+<?phpnamespace Shop\Member\Article;class Class_Base {	protected function __construct()	{		echo 'Shop\Member\Article\Class_Base';	}}/*  */

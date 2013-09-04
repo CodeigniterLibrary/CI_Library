@@ -1,0 +1,1 @@
+<?phpnamespace Shop\Member\Article;use Shop\Member\Test as Test;class Class1 extends Test\Class_Base{	public function __construct()	{		// parent::__construct();	}		public static function say()	{		echo __CLASS__;	}}/*  *//*  */

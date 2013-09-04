@@ -1,0 +1,263 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!--m_store_edit.tmpl//-->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="pragma" content="no-cache">
+<link href="css/zigbee.css" rel="stylesheet" type="text/css">
+<TITLE><{$title}></TITLE>
+<{$srcAllJSfile}>
+<script language="JavaScript">
+function sendorder(index)
+{
+
+	if(index=="<{$cmd}>")
+	{
+		var msg="";
+		if(document.mainform.shop_name.value=="")
+		{
+			msg+=getmsg("ShopNameEmpty");
+		}
+		else if(!chkword(document.mainform.shop_name.value,50))
+		{
+			msg+=getmsg("ShopNameWrong");
+		}
+		if(document.mainform.shop_duty.value=="")
+		{
+			msg+=getmsg("ShopDutyEmpty");
+		}
+		else if(!chkword(document.mainform.shop_duty.value,20))
+		{
+			msg+=getmsg("ShopDutyWrong");
+		}
+		if(document.mainform.shop_sort.value!="" && !chkvalidnumberbase(document.mainform.shop_sort.value,""))
+		{
+			msg+=getmsg("ShopSortWrong");
+		}
+		if(msg!="")
+		{
+			alert(msg);
+			return false;
+		}
+	}
+	document.mainform.topopt.value=index;
+	document.mainform.submit();
+}
+function showImage(c_flg)
+{
+	obj=document.getElementById('image');
+	if(c_flg==1)
+	{
+		obj.innerHTML='<img src="images/larout6_11.jpg">';
+	}
+	else
+	{
+		obj.innerHTML='';
+	}
+}
+function enlarge(showimage,which,e){
+showimage = document.getElementById(showimage)
+//Render image code for IE 4+
+if (document.all){
+if (which!="")
+{
+	showimage.innerHTML='<img src="'+which+'" width="'+showimage.style.width+'" height="'+showimage.style.height+'">'
+	showimage.style.visibility="visible"
+}
+else
+{
+	showimage.innerHTML="";
+}
+return false
+}
+else if (document.layers){
+document.showimage.document.write('<a href="#" onMouseover="drag_dropns(showimage)"><img src="'+which+'" border=0 width="10";hright="20"></a>')
+document.showimage.document.close()
+document.showimage.left=e.x
+document.showimage.top=e.y
+document.showimage.visibility="show"
+return false
+}
+else
+return true
+}
+function clearIt()   
+{   
+  document.all("txtPassword").value="";
+}
+
+function showWindow()
+{
+	//window.open("m_store.php?cmd=add&topopt=add_detail",window,"dialogHeight: 320px; dialogWidth: 480px; edge: sunken; center: Yes; help: No; resizable: No; status: No;");
+	window.open ('m_store.php?cmd=add&topopt=add_detail', 'newwindow', 'height=430, width=700, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');	
+}
+</script>
+</head>
+
+<body topmargin="0">
+<form name="mainform" method="post" action="m_store.php" enctype="multipart/form-data"> 
+<input type="hidden" name="cmd" value="<{$cmd|default:'add'}>">
+<input type="hidden" name="topopt" value="">
+<input type="hidden" name="tmpid" value="<{$resdata[0].id}>">
+<input type="hidden" name="Logout" value="">
+<input type="hidden" name="currentPage" value="<{$cp|default:'1'}>">
+<input type="hidden" name="copyflg" value="<{$copyflg}>">
+<{include file="head.tmpl"}>
+<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" class="color3">
+<tr>
+<td height="20">&nbsp;</td>
+</tr>
+<tr >
+<td valign="top">
+	<table cellspacing="0" cellpadding="0" width="85%" border="0" align="center" class="color3">
+	<tr>
+	<td>
+		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+		<tr>
+		<td width="100%" valign="top">
+			<table width="100%" height="30" border="0" align="center" cellpadding="2" cellspacing="1"  class="border2">
+			<tr>
+				<td colspan="2" align="left" class="bg" height="30"><font class="bluenew"> 店铺基本表<{if $cmd_type eq 'add'}>新建<{elseif $cmd_type eq 'edit'}>更新<{else}>复制<{/if}><{$topopt}></font></td>
+			</tr>
+			<tr>
+			<td>
+				<table align="center" cellpadding="2" cellspacing="1" width="100%" class="border3">
+				<tr>
+					<td align="left" width="24%" class="color8" height="23" colspan="2"><font class="blue"> 店铺编号</font> <font class="red">*</font></td>
+					<td align="left" class="color9" colspan="2"><{$resdata[0].id}></td>
+					<td align="left" width="24%" class="color8" height="23"><font class="blue"> 营业状况</font></td>
+					<td align="left" class="color9"><input type="text"  size="8" maxlength="12" name="shop_type"  value="<{$resdata[0].type}>" style="ime-mode:disabled"></td>
+				</tr>
+				<tr>
+					<td align="left" class="color8" height="23" colspan="2"><font class="blue"> 店铺名</font> <font class="red">*</font></td>
+					<td align="left" class="color9" colspan="2"><input type="text" size="20" maxlength="50" name="shop_name"  value="<{$resdata[0].name}>" style=""></td>
+					<td align="left" class="color8" height="23"><font class="blue"> 店铺名拼音</font></td>
+					<td align="left" class="color9"><input type="text" size="24" maxlength="50" name="shop_name_kana"  value="<{$resdata[0].name_kana}>" style="ime-mode:disabled"></td>
+				</tr>
+				<tr>
+					<td align="left" class="color8" height="23" colspan="2"><font class="blue"> 英文</font></td>
+					<td align="left" class="color9" colspan="6"><input type="text" size="20" maxlength="100" name="shop_name_en"  value="<{$resdata[0].name_en}>" style="ime-mode:disabled"></td>
+				</tr>
+				<tr>
+					<td align="left" class="color8" height="23" colspan="2"><font class="blue"> 店铺负责人</font> <font class="red">*</font></td>
+					<td align="left" class="color9" colspan="2"><input type="text" size="20" maxlength="20" name="shop_duty" value="<{$resdata[0].duty}>"  style=""></td>
+					<td align="left" class="color8" height="23"><font class="blue"> 店铺负责人拼音</font></td>
+					<td align="left" class="color9"><input type="text" size="24" maxlength="20" name="shop_duty_kana" value="<{$resdata[0].duty_kana}>" style="ime-mode:disabled"></td>
+				</tr>
+				<tr>
+					<td align="left" class="color8" height="23" colspan="2"><font class="blue"> 显示顺序</font></td>
+					<td align="left" class="color9" colspan="4"><input type="text" size="6" maxlength="6" name="shop_sort" value="<{$resdata[0].sort}>"  style="ime-mode:disabled"></td>
+				</tr>
+				<tr>
+					<td align="left" class="color8" height="23" colspan="2"><font class="blue"><input type="hidden" name="MAX_FILE_SIZE" value="2000000"> 店铺标志选择</font></td>
+					<td align="left" class="color9" colspan="4"><INPUT type="file" name="shop_logopath" maxlength=30 size=30 value="" STYLE="ime-mode:disabled"   ><{if $del_img.del_logo ne ''}><input type="checkbox" value="1" name="del_logo" id="del_logo"><font class="red">&nbsp;削 除</font><{/if}><font class="red">&nbsp;(JPG,GIF,JPEG,PNG)</font>
+					<{if $del_img.del_logo ne ''}><br><a href="<{$imgPathlogo}>" target="_blank">预览</a><{/if}>
+				</tr>
+					<tr>
+						<td align="left" valign="middle" class="color8" rowspan="6" colspan="2"><font class="blue"> 信息显示</font></td>
+						<td align="left" class="color8" ><font class="blue"> 第1行</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message1" value="<{$resdata[0].message1}>" style="ime-mode:disabled">（最大位数）</td>
+					</tr>
+					<tr>
+						<td align="left" class="color8"><font class="blue"> 第1行英文</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message1_en" value="<{$resdata[0].message1_en}>" style="ime-mode:disabled">（最大位数）</td>						
+					</tr>
+					<tr>
+						<td align="left" class="color8"><font class="blue"> 第2行</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message2" value="<{$resdata[0].message2}>" style="ime-mode:disabled">（最大位数）</td>						
+					</tr>
+					<tr>
+						<td align="left" class="color8"><font class="blue"> 第2行英文</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message2_en" value="<{$resdata[0].message2_en}>" style="ime-mode:disabled">（最大位数）</td>						
+					</tr>
+					<tr>
+						<td align="left" class="color8"><font class="blue"> 第3行</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message3" value="<{$resdata[0].message3}>" style="ime-mode:disabled">（最大位数）</td>	
+					</tr>
+					<tr>
+						<td align="left" class="color8"><font class="blue"> 第3行英文</font></td>
+						<td align="left" class="color9" colspan="3"><input type="text" size="30" maxlength="40" name="shop_message3_en" value="<{$resdata[0].message3_en}>" style="ime-mode:disabled">（最大位数）</td>						
+					</tr>
+					<tr style="display:none">
+						<td align="left" width="6%"%" class="color8" rowspan="2"><font class="blue">店铺介绍</font></td>
+						<td align="left" class="color8"><font class="blue"><input type="hidden" name="MAX_FILE_SIZE" value="2000000" > 显示图像A</font></td>
+						<td align="left" class="color9" colspan="3">
+						<INPUT type="file" name="FilePathA"  size=25 value="" STYLE="ime-mode:disabled"  ><!-- onchange="return enlarge('showimageA',this.value,event)"-->
+						<{if $del_img.del_PathA ne ''}><input type="checkbox" value="1" name="del_PathA" id="del_PathA"><font class="red">删 除</font><br><a href="<{$imgPathA}>" target="_blank">预览</a><{/if}>
+						<td align="left" valign="middle" class="color9" rowspan="2"><img src="images/pic_3.gif">
+     
+						</td>
+					</tr>
+					<tr style="display:none">
+						<td align="left" class="color8"><font class="blue"><input type="hidden" name="MAX_FILE_SIZE" value="2000000"> 显示图像B</font></td>
+						<td align="left" class="color9" colspan="3">
+						<INPUT type="file" name="FilePathB" size=25 value="" STYLE="ime-mode:disabled"   ><!--onchange="return enlarge('showimageB',this.value,event)"-->
+						<{if $del_img.del_PathB ne ''}><input type="checkbox" value="1" name="del_PathB" id="del_PathB"><font class="red">删 除</font><br><a href="<{$imgPathB}>" target="_blank">预览</a><{/if}>
+					</tr>
+					<!--
+					<tr>
+						<td align="left" class="color8" valign="top"><font class="blue"><input type="hidden" name="MAX_FILE_SIZE" value="200000"> 表示画像C</font></td>
+						<td align="left" class="color9" colspan="3"><INPUT type="radio" name="img_flg" id="img_flg1" value="0" <{if $resdata[0].c_flg ne "1"}>checked<{/if}>><label for="img_flg1">画像</label> 
+														<INPUT type="file" name="FilePathC"  size=18 value="" STYLE="ime-mode:disabled"  >
+														<{if $del_img.del_PathC ne ''}><input type="checkbox" value="1" name="del_PathC" id="del_PathC"><font class="red">削 除</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<{$imgPathC}>" target="_blank">プレビュー</a><{/if}>
+														<br><input type="radio" name="img_flg" id="img_flg2" valign="top" value="1" <{if $resdata[0].c_flg eq "1"}>checked<{/if}>><label for="img_flg2">メッセージ</label>
+														<textarea rows="3" cols="20" name="img_memo" id="img_memo" style="ime-mode:disabled"><{$resdata[0].c_commend}></textarea></td>
+					</tr>
+					-->
+					<tr style="display:none">
+						<td align="left" class="color8" colspan="2" height="115px"><font class="blue"> 组显示类型</font></td>
+						<td align="left" valign="top" class="color9" colspan="2" ><select name="WeekValue" onchange="showImage(this.value);">
+																							<option value="0" <{if $resdata[0].pattern eq '0'}>SELECTED<{/if}> >选择种类的话</option>
+																							<option value="1" <{if $resdata[0].pattern eq '1'}>SELECTED<{/if}> >会显示种类</option>
+																						</select>
+						</td>
+						<td align="left" class="color9" colspan="2"><center><span id="image"><{if $resdata[0].pattern eq '1'}><img src="images/larout6_11.jpg"><{/if}></span></center></td>
+					</tr>
+					<!--<tr>
+					    <td align="left" class="color8" colspan="2"><font class="blue" > PASSWORD </font></td>
+					    <td align="left" class="color9" colspan="4">
+					    <input type="password" maxlength="20" name="shop_passwd" id="txtPassword" value="<{$resdata[0].passwd}>" style="ime-mode:disabled" onfocus="clearIt()">
+					    </td>
+					</tr>-->
+				<tr>
+					<td align="right" class="color8" height="23" colspan="6"><font class="red">*  必须输入的项目</font></td>
+				</tr>
+			</td>
+			</tr>
+			</table>	
+		</td></tr>
+		</table>
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+
+
+<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" class="color3">
+<tr>
+<td height="20">&nbsp;</td>
+</tr>
+<tr >
+<td valign="top">
+	
+</td>
+</tr>
+</table>
+
+<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0" class="color3">
+<tr><td><table cellspacing="0" cellpadding="0" width="77%" border="0" align="center" class="color3">
+<tr>
+    <td height="5" colspan="2">&nbsp;</td></tr>		
+  <tr>
+  		<td align="left" width="50%"><input type="button" value="其他店铺一览" class="submitlist" onclick="javascript:showWindow()"></td>
+		<td align="right" width="50%"><input type="button" value="保存" class="submitlist" onclick="javascript:sendorder('add')"> <input type="button" value="取消" class="submitlist" onclick="javascript:sendorder('back')"></td>
+  </tr>
+</table></td></tr>
+  
+</table>
+<{include file="foot.tmpl"}>
+</form>
+</body>
+</html>
