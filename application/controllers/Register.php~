@@ -1,0 +1,96 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Register extends MY_Controller {
+	
+	public function __construct()
+	{
+		parent::__construct();
+		
+		$name = 'Register';
+		
+		$this->_mvc = array_merge(self::_get_view_name(), [
+			'NAME' => $name,
+			'MOD_SELF' => 'Client_mod',
+			'VIEW_SHOW' => $name . '/show',
+			'VIEW_EDIT' => $name . '/edit',
+			'VIEW_DETAIL' => $name . '/detail',
+		]);
+	}
+	
+	public function index()
+	{
+		
+	}
+
+	public function add()
+	{
+		$this->_edit('add');
+	}
+
+	public function _edit($cmd)
+	{
+
+		$data['cmd'] = $cmd;
+
+		$arr_check = array(
+			'add' => [
+				[
+					'field' => 'user_name',
+					'label' => '小组名称',
+					'rules' => 'required|min_length[5]|max_length[30]|unique[user.user_name]',],
+				[
+					'field' => 'user_attention[]',
+					'rules' => 'integer|max_length[2]',],
+			],
+			'edit' => [
+				[
+					'field' => 'user_attention[]',
+					'rules' => 'integer|max_length[2]',],
+			],
+		);
+
+		extract($this->_mvc);
+
+		if (empty($_POST))
+		{ // 点链接 初次进入
+			if ($cmd === 'add')
+			{
+				$data['res'] = array();
+			}
+			elseif ($cmd === 'edit')
+			{
+				$data['res'] = $this->$MOD_SELF->get_id_arr();
+			};
+
+			$this->_edit_show($data);
+		}
+		else
+		{
+
+			if ($this->_valid_data($arr_check[$cmd]))
+			{ // form 验证
+				if (isset($_POST['conf_cmd']))
+				{ // 完成 插入 或 更新
+					$this->$MOD_SELF->$cmd();
+					$this->show();
+				}
+				else
+				{ // 进入确认页面
+					$this->_detail_show();
+				};
+				return false;
+			}
+			else
+			{
+				$data['res'] = $_POST;
+				$this->_edit_show($data);
+			};
+		};
+	}
+	
+	
+
+}
+
+/* End of file welcome.php */
+/* Location: ./application/controllers/welcome.php */

@@ -1,0 +1,200 @@
+﻿<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Group extends MY_Controller {
+
+	private static $_arr_res = array();
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->lang->load('table');
+
+		self::$_arr_res['arr_attention'] = $this->lang->line('table_attention');
+		self::$_arr_res['arr_search'] = $this->lang->line('table_search');
+
+		$name = 'Group';
+
+		$this->_mvc = array_merge(self::_get_view_name(), [
+			'NAME' => $name,
+			'MOD_SELF' => $name . '_mod',
+			'VIEW_SHOW' => $name . '/show',
+			'VIEW_EDIT' => $name . '/edit',
+			'VIEW_DETAIL' => $name . '/detail',
+		]);
+
+		$this->load->model($this->_mvc['MOD_SELF'], '', TRUE);
+	}
+
+	public function show()
+	{
+
+		extract($this->_mvc);
+
+		$data = []; //防配置被改，就被注入
+
+		if (isset($_GET['del_cmd']))
+		{
+			if (isset($_GET['no_script']))
+			{
+				$this->load->view($NO_SCRIPT_DEL);
+				return false;
+			}
+			elseif (isset($_GET['chkopt']))
+			{
+				$this->$MOD_SELF->delete();
+			};
+		};
+
+		if (isset($_GET['show_cmd']))
+		{
+			$config['base_url'] = $_SERVER['SCRIPT_NAME']
+					. '/' . $NAME . '?'
+					. explode('&per_page', $_SERVER['QUERY_STRING'], 2)[0];
+
+			$data['sort_url'] = explode('&sort=', $config['base_url'], 2)[0];
+
+			$data['res'] = $this->$MOD_SELF->get_pagination_arr($config);
+		};
+
+		$data['arr_res'] = self::$_arr_res;
+
+		require(self::_get_macro_temp('view_list'));
+	}
+
+	public function csv()
+	{
+
+		extract($this->_mvc);
+
+		function SetCSVHeader($file_name = '', $size = 0)
+		{
+
+			if (headers_sent() == false)
+			{
+				header("Content-type: text/comma-separated-values; name={$file_name}");
+				header("Content-disposition: attachment; filename={$file_name}");
+				$size && header("Content-length: {$size}");
+			};
+		}
+
+		SetCSVHeader('test.csv');
+
+		$query = get_all_query();
+
+		while ($row = $query->row_arr())
+		{
+			var_dump($row);
+		}
+	}
+
+	public function add()
+	{
+		$this->_edit('add');
+	}
+
+	public function edit()
+	{
+		$this->_edit('edit');
+	}
+
+	public function _edit($cmd)
+	{
+
+		$data['cmd'] = $cmd;
+
+		$arr_check = array(
+			'add' => [
+				[
+					'field' => 'group_name',
+					'label' => '小组名称',
+					'rules' => 'required|min_length[5]|max_length[30]|unique[group.group_name]',],
+				[
+					'field' => 'group_attention[]',
+					'rules' => 'integer|max_length[2]',],
+			],
+			'edit' => [
+				[
+					'field' => 'group_attention[]',
+					'rules' => 'integer|max_length[2]',],
+			],
+		);
+
+		extract($this->_mvc);
+
+		if (empty($_POST))
+		{ // 点链接 初次进入
+			if ($cmd === 'add')
+			{
+				$data['res'] = array();
+			}
+			elseif ($cmd === 'edit')
+			{
+				$data['res'] = $this->$MOD_SELF->get_id_arr();
+			};
+
+			$this->_edit_show($data);
+		}
+		else
+		{
+
+			if ($this->_valid_data($arr_check[$cmd]))
+			{ // form 验证
+				if (isset($_POST['conf_cmd']))
+				{ // 完成 插入 或 更新
+					$this->$MOD_SELF->$cmd();
+					$this->show();
+				}
+				else
+				{ // 进入确认页面
+					$this->_detail_show();
+				};
+				return false;
+			}
+			else
+			{
+				$data['res'] = $_POST;
+				$this->_edit_show($data);
+			};
+		};
+	}
+
+	private function _edit_show($data)
+	{
+
+		extract($this->_mvc);
+		$data['arr_res'] = self::$_arr_res;
+
+		require(self::_get_macro_temp('view_edit'));
+	}
+
+	public function detail()
+	{
+		$this->_detail_show();
+	}
+
+	private function _detail_show($data = array())
+	{
+
+		extract($this->_mvc);
+
+		$data['cmd'] = (basename($_SERVER['PATH_INFO']));
+
+		if (empty($_POST))
+		{ // 详细画面
+			$data['res'] = $this->$MOD_SELF->get_id_arr($this->input->get_post('chkopt'));
+		}
+		else
+		{ // insert update 的确认画面
+			$data['res'] = $_POST;
+		};
+
+		$data['arr_res'] = self::$_arr_res;
+
+		require(self::_get_macro_temp('view_detail'));
+	}
+
+}
+
+/* Location: ./application/controllers/Group.php */
