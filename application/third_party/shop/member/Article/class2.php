@@ -1,1 +1,0 @@
-<?phpnamespace Shop\Member\Article{	class Class2	{		public function __construct()		{			//echo __CLASS__;		}	}}/*  */
