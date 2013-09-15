@@ -38,7 +38,7 @@ if ( ! function_exists('ymd_format'))
 	}
 }
 
-if ( !function_exists('say_sort'))
+if ( ! function_exists('say_sort'))
 {// 用于排序
 	function say_sort($sort_by)
 	{

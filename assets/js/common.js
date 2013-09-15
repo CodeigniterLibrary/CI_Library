@@ -69,8 +69,7 @@ var wImg;
 		$.get(this.href + '&ajax=1', function(data) {
 			$.dialog({
 				content: data,
-				follow: this,
-				lock: true
+				follow: this
 			});
 		});
 		return false;

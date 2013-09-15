@@ -6,7 +6,6 @@ use doitphp\libraries as libraries;
 class Replace_lang extends MY_Controller {
 
 	private static $_arr_root;
-	private static $_lang;
 	private static $_meta = '<meta charset="utf-8">';
 
 	public function __construct()
@@ -66,8 +65,9 @@ class Replace_lang extends MY_Controller {
 		$arr = [];
 		foreach (self::$_arr_root as $_root)
 		{
-			$arr = get_multibyte(directory_map("{$_root}{$from}"), "{$_root}{$from}");
+			$arr = get_multibyte(directory_map("{$_root}{$from}"), "{$_root}{$from}", TRUE);
 		}
+		get_multibyte([], ''); // 还原static变量
 		
 		$arr_csv = libraries\csv::readCsvKV(self::_get_macro_csv("{$from}-to-{$to}"));
 		
@@ -100,49 +100,46 @@ class Replace_lang extends MY_Controller {
 		$to OR $to = 'zh-tw';
 		$from OR $from = 'zh-cn';
 		
-		self::$_lang = libraries\csv::readCsvKV(self::_get_macro_csv("{$from}-to-{$to}"));
-		if (is_array(self::$_lang))
+		$_lang = libraries\csv::readCsvKV(self::_get_macro_csv("{$from}-to-{$to}"));
+		if (is_array($_lang))
 		{
+			echo(self::$_meta);
 			foreach (self::$_arr_root as $_root)
 			{
-				self::_replace_file($_root, $from, $to);
+				foreach (clone_folder(
+						directory_map($_root . $from)
+						, $_root . $from
+						, $_root . $to
+					) as $path_from => $path_to)
+				{
+					write_file(
+							$path_to
+							, strtr(read_file($path_from), $_lang)
+					);
+				}
+				echo '成功';
 			}
 		}
 	}
 
-	private static function _replace_file($_root, $from, $to)
-	{
-		$_map = directory_map($_root . $from);
-
-		$arr_file = clone_folder(
-				$_map
-				, $_root . $from
-				, $_root . $to
-		);
-
-		foreach ($arr_file as $path_from => $path_to)
-		{
-			write_file(
-					$path_to
-					, strtr(read_file($path_from), self::$_lang)
-			);
-		}
-		
-		echo(self::$_meta);
-		echo '成功';
-	}
-
 }
 
-function get_multibyte($file_arr, $path)
-{
-	static $arr_data = array();
+/**
+ * 用于查询文件中的汉字或双字符串，返回以汉字为key的数组。
+ * @access	public
+ * @param	array文件数组, string文件根目录, bool
+ * @return	array
+ */
+function get_multibyte($file_arr, $path, $recursing = FALSE)
+{ // 
+	static $arr_data;
+	($recursing) OR $arr_data = array();
 
 	foreach ($file_arr as $k => $val)
 	{
 		if (is_array($val))
 		{
-			get_multibyte($val, $path . '/' . $k);
+			get_multibyte($val, $path . '/' . $k, TRUE);
 		}
 		else
 		{
@@ -198,31 +195,6 @@ function get_multibyte($file_arr, $path)
 	}
 
 	return $arr_data;
-}
-
-function clone_folder($file_arr, $path_from, $path_to)
-{
-	//根据备份文件夹的路径新建$path_to文件夹, 并返回绝对路径数数。
-	static $path_from_to = array();
-
-	if ((is_dir($path_to) === FALSE) && (@mkdir($path_to, 0755) === FALSE))
-	{
-		exit('建目录失败');
-	};
-
-	foreach ($file_arr as $k => $val)
-	{
-		if (is_array($val))
-		{
-			clone_folder($val, $path_from . '/' . $k, $path_to . '/' . $k);
-		}
-		else
-		{
-			$path_from_to[$path_from . '/' . $val] = $path_to . '/' . $val;
-		}
-	}
-
-	return $path_from_to;
 }
 
 /* End of file Replace_lang.php */

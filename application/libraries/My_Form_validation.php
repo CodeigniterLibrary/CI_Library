@@ -58,7 +58,7 @@ class MY_Form_validation extends CI_Form_validation {
 		
 	}
 	
-	protected function is_strong($value)
+	protected static function is_strong($value)
 	{
 		$len = strlen($value);
 		$level = [];
@@ -107,7 +107,7 @@ class MY_Form_validation extends CI_Form_validation {
 				->CI
 				->db
 				->limit(1)
-				->get_where($arr[0], [$arr[1] => $_POST[$arr[1]]])
+				->get_where($arr[0], [$arr[1] => $value])
 				->num_rows() === 0;
 	}
 	
@@ -122,9 +122,13 @@ class MY_Form_validation extends CI_Form_validation {
 		{
 			$chkopt = $_GET[$arr[3]];
 		}
-		else
+		elseif (isset($_POST[$arr[3]]))
 		{
 			$chkopt = $_POST[$arr[3]];
+		}
+		else
+		{
+			return FALSE;
 		}
 		
 		if (is_array($chkopt))
@@ -142,7 +146,7 @@ class MY_Form_validation extends CI_Form_validation {
 				->db
 				->select($arr_id_key)
 				->limit(1)
-				->get_where($arr[0], [$arr[1] => $_POST[$arr[1]]])
+				->get_where($arr[0], [$arr[1] => $value])
 				->row_array();
 		
 		if (empty($row))

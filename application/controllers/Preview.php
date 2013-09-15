@@ -4,27 +4,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Preview extends MY_Controller {
 
-	private static $_arr_res;
-
 	public function __construct()
 	{
 		parent::__construct();
-		self::$_arr_res = [
+		$this->_arr_res = [
 			'temp' => $this->config->config['temp'],
 			'root_temp' => $this->config->config['root_temp'],
 			'root_client' => $this->config->config['root_client'],
 		];
 
 		$name = 'Preview';
-
-		$this->_mvc = array_merge(self::_get_view_name(), [
+		$lang = get_config()['language'] . '/';
+		$this->_mvc = array_merge(self::_get_view_name($lang), [
 			'NAME' => $name,
-			'MOD_SELF' => $name . '_mod',
-			'VIEW_SHOW' => $name . '/show',
-			'VIEW_EDIT' => $name . '/edit',
-			'VIEW_DETAIL' => $name . '/detail',
-			'VIEW_UPLOAD' => $name . '/upload',
-			'VIEW_ERROR' => $name . '/error',
+			'MOD_SELF' => "{$name}_mod",
+			'VIEW_SHOW' => "{$lang}{$name}/show",
+			'VIEW_EDIT' => "{$lang}{$name}/edit",
+			'VIEW_DETAIL' => "{$lang}{$name}/detail",
+			'VIEW_UPLOAD' => "{$lang}{$name}/upload",
+			'VIEW_ERROR' => "{$lang}{$name}/error",
+			'VIEW_IFRAME_SHOW' => "{$lang}{$name}/iframe_show",
 		]);
 	}
 	
@@ -51,17 +50,7 @@ class Preview extends MY_Controller {
 		{
 			if ($this->_valid_img())
 			{
-				$arr_path = array();
-				$arr_path['client_path'] = self::$_arr_res['root_client'] . '1/';
-				$arr_path['album_path'] = $arr_path['client_path'] . 'default/';
-
-				foreach ($arr_path as $path)
-				{
-					if ((!is_dir($path)) && (!mkdir($path, 0755)))
-					{
-						echo('mkdir err');
-					}
-				}
+				$path = self::mkdir_arr(['1/', 'default/',], $this->_arr_res['root_client']);
 
 				if (isset($_POST['images'][0]))
 				{
@@ -69,8 +58,8 @@ class Preview extends MY_Controller {
 					{
 						$image = get_img_name($image);
 
-						if (!copy(self::$_arr_res['root_temp'] . $image, $arr_path['album_path'] . $image) OR
-								!copy(self::$_arr_res['root_temp'] . 'thumb_' . $image, $arr_path['album_path'] . 'thumb_' . $image))
+						if (!copy($this->_arr_res['root_temp'] . $image, $path . $image) OR
+								!copy($this->_arr_res['root_temp'] . 'thumb_' . $image, $path . 'thumb_' . $image))
 						{
 							echo "failed to copy {$image}...\n";
 						}
@@ -85,7 +74,7 @@ class Preview extends MY_Controller {
 		}
 		else
 		{
-			$data['arr_res'] = self::$_arr_res;
+			$data['arr_res'] = $this->_arr_res;
 			$this->load->view($HEADER);
 			$this->load->view($MENU);
 			$this->load->view($VIEW_EDIT, $data);
@@ -97,6 +86,8 @@ class Preview extends MY_Controller {
 	{
 		$this->load->library('upload');
 
+		self::mkdir_arr([$this->_arr_res['root_client'], $this->_arr_res['root_temp'],]);
+		
 		if ($this->upload->do_upload())
 		{
 			extract($this->_mvc);
@@ -115,12 +106,12 @@ class Preview extends MY_Controller {
 			$data['file_name_thumb'] = 'thumb_' . $data['file_name'];
 
 			$data['orig_name'] = $this->upload->orig_name;
-			$data['arr_res'] = self::$_arr_res;
+			$data['arr_res'] = $this->_arr_res;
 			$data['error'] = '';
 
 			$config['image_library'] = 'gd2';
-			$config['source_image'] = self::$_arr_res['root_temp'] . $data['file_name'];
-			$config['new_image'] = self::$_arr_res['root_temp'] . $data['file_name'];
+			$config['source_image'] = $this->_arr_res['root_temp'] . $data['file_name'];
+			$config['new_image'] = $this->_arr_res['root_temp'] . $data['file_name'];
 			$config['create_thumb'] = TRUE; //FALSE; //
 			$config['maintain_ratio'] = TRUE; //FALSE; //
 			$config['width'] = 320;
@@ -142,7 +133,34 @@ class Preview extends MY_Controller {
 
 	public function success()
 	{
-		$this->load->view('iframe_show');
+		extract($this->_mvc);
+		$this->load->view($VIEW_IFRAME_SHOW);
+	}
+	
+	private static function mkdir_arr($arr, $path = FALSE)
+	{
+		if (is_string($path))
+		{
+			foreach ($arr as $v)
+			{
+				$path .= $v;
+				if ((!is_dir($path)) && (!mkdir($path, 0755)))
+				{
+					echo('mkdir err');
+				};
+			}
+			return $path;
+		}
+		else
+		{
+			foreach ($arr as $path)
+			{
+				if ((!is_dir($path)) && (!mkdir($path, 0755)))
+				{
+					echo('mkdir err');
+				}
+			}
+		}
 	}
 
 	private function _valid_img($data = ['error' => ''])

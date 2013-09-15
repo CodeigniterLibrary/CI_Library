@@ -902,7 +902,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function required($str)
+	protected static function required($str)
 	{
 		if (is_array($str))
 		{
@@ -924,7 +924,7 @@ class CI_Form_validation {
 	 * @param	regex
 	 * @return	bool
 	 */
-	protected function regex_match($str, $regex)
+	protected static function regex_match($str, $regex)
 	{
 		return ( ! ! preg_match($regex, $str));
 	}
@@ -939,7 +939,7 @@ class CI_Form_validation {
 	 * @param	field
 	 * @return	bool
 	 */
-	protected function matches($str, $field)
+	protected static function matches($str, $field)
 	{
 		if (isset($_POST[$field]))
 		{
@@ -979,12 +979,12 @@ class CI_Form_validation {
 	 * @param	value
 	 * @return	bool
 	 */
-	protected function min_length($str, $val)
+	protected static function min_length($str, $val)
 	{
 		return isset($str[$val-1]);
 	}
 	
-	protected function min_length_mb($str, $val)
+	protected static function min_length_mb($str, $val)
 	{
 		if (preg_match('/[^0-9]/', $val))
 		{
@@ -1011,12 +1011,12 @@ class CI_Form_validation {
 	 * @return	bool
 	 */
 	
-	protected function max_length($str, $val)
+	protected static function max_length($str, $val)
 	{
 		return isset($str[$val]) === FALSE;
 	}
 	
-	protected function max_length_mb($str, $val)
+	protected static function max_length_mb($str, $val)
 	{
 		if (preg_match('/[^0-9]/', $val))
 		{
@@ -1043,7 +1043,7 @@ class CI_Form_validation {
 	 * @param	value
 	 * @return	bool
 	 */
-	protected function exact_length($str, $val)
+	protected static function exact_length($str, $val)
 	{
 		if (preg_match("/[^0-9]/", $val))
 		{
@@ -1067,7 +1067,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function valid_email($str)
+	protected static function valid_email($str)
 	{
 		return ( ! ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $str));
 	}
@@ -1124,7 +1124,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function alpha($str)
+	protected static function alpha($str)
 	{
 		return ( ! ! preg_match("/^([a-z])+$/i", $str));
 	}
@@ -1138,7 +1138,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function alpha_numeric($str)
+	protected static function alpha_numeric($str)
 	{
 		return ( ! ! preg_match("/^([a-z0-9])+$/i", $str));
 	}
@@ -1152,7 +1152,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function alpha_dash($str)
+	protected static function alpha_dash($str)
 	{
 		return ( ! ! preg_match("/^([-a-z0-9_-])+$/i", $str));
 	}
@@ -1166,7 +1166,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function numeric($str)
+	protected static function numeric($str)
 	{
 		return ( ! ! preg_match( '/^[\-+]?[0-9]*\.?[0-9]+$/', $str));
 	}
@@ -1180,7 +1180,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function is_numeric($str)
+	protected static function is_numeric($str)
 	{
 		return (is_numeric($str));
 	}
@@ -1194,7 +1194,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function integer($str)
+	protected static function integer($str)
 	{
 		return ( ! ! preg_match('/^[\-+]?[0-9]+$/', $str));
 	}
@@ -1208,7 +1208,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function decimal($str)
+	protected static function decimal($str)
 	{
 		return ( ! ! preg_match('/^[\-+]?[0-9]+\.[0-9]+$/', $str));
 	}
@@ -1222,7 +1222,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function greater_than($str, $min)
+	protected static function greater_than($str, $min)
 	{
 		if (is_numeric($str))
 		{
@@ -1243,7 +1243,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function less_than($str, $max)
+	protected static function less_than($str, $max)
 	{
 		if (is_numeric($str))
 		{
@@ -1264,7 +1264,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function is_natural($str)
+	protected static function is_natural($str)
 	{
 		return ( ! ! preg_match( '/^[0-9]+$/', $str));
 	}
@@ -1278,7 +1278,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function is_natural_no_zero($str)
+	protected static function is_natural_no_zero($str)
 	{
 		if (preg_match( '/^[0-9]+$/', $str))
 		{
@@ -1302,7 +1302,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function valid_base64($str)
+	protected static function valid_base64($str)
 	{
 		return ( ! ! preg_match('/[^a-zA-Z0-9\/\+=]/', $str));
 	}
@@ -1349,7 +1349,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	string
 	 */
-	protected function prep_url($str = '')
+	protected static function prep_url($str = '')
 	{
 		if ($str == 'http://' OR $str == '')
 		{
@@ -1403,7 +1403,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	string
 	 */
-	protected function encode_php_tags($str)
+	protected static function encode_php_tags($str)
 	{
 		return str_replace(array('<?php', '<?PHP', '<?', '?>'),  array('&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'), $str);
 	}

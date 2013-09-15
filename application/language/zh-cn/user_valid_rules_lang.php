@@ -3,30 +3,17 @@
 return array(
 	'add' => [
 		[
-			'field' => 'user_name_is_unique',
-			'label' => '名称',
-			'rules' => 'required|is_unique[user.user_name]',],
-		[
-			'field' => 'user_email_is_unique',
-			'label' => 'email',
-			'rules' => 'required|is_unique[user.user_email]',],
-		[
-			'field' => 'user_phone_is_unique',
-			'label' => '手机',
-			'rules' => 'required|is_unique[user.user_phone]',],
-			
-		[
 			'field' => 'user_name',
 			'label' => '名称',
-			'rules' => 'required|min_length[5]|max_length[30]|no_email',],
+			'rules' => 'required|min_length[5]|max_length[30]|no_email|is_unique[user.user_name]',],
 		[
 			'field' => 'user_email',
 			'label' => 'email',
-			'rules' => 'required|valid_email|max_length[100]',],
+			'rules' => 'required|valid_email|max_length[100]|is_unique[user.user_email]',],
 		[
 			'field' => 'user_phone',
 			'label' => '手机',
-			'rules' => 'is_int|min_length[8]|max_length[14]',],
+			'rules' => 'is_int|min_length[8]|max_length[14]|is_unique[user.user_phone]',],
 		[
 			'field' => 'user_attention[]',
 			'label' => '爱好',
@@ -43,14 +30,9 @@ return array(
 	],
 	'edit' => [
 		[
-			'field' => 'user_phone_is_up_unique',
-			'label' => '手机',
-			'rules' => 'required|update_unique[user.user_phone.user_id.chkopt]',],
-			
-		[
 			'field' => 'user_phone',
 			'label' => '手机',
-			'rules' => 'is_int|min_length[8]|max_length[14]',],
+			'rules' => 'is_int|min_length[8]|max_length[14]|update_unique[user.user_phone.user_id.chkopt]',],
 		[
 			'field' => 'user_attention[]',
 			'rules' => 'integer|max_length[2]',],

@@ -3,7 +3,7 @@
 return array(
 	[
 		'field' => 'is_login',
-		'label' => '',
+		'label' => '名称',
 		'rules' => 'required|is_login[user_name.user_pass]',],
 	[
 		'field' => 'user_name',

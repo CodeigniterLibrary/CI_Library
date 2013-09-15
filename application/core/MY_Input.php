@@ -5,7 +5,7 @@ class MY_Input extends CI_Input {
 	public static function is_xml_request()
     {
         return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) 
-           && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHTTPREQUEST');
+           && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
     }
 	
 	public static function is_get()

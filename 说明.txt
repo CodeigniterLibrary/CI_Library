@@ -1,0 +1,10 @@
+初用github，不太熟悉。
+
+目前这东西没什么功能，主要是个架子。
+因为改了表，所以较多的控制器没有用了。还没写权限。
+
+http://127.0.0.1/CodeIgniter__/index.php/Group
+http://127.0.0.1/CodeIgniter__/index.php/login （这个的用户名和密码在下面的链接申）http://127.0.0.1/CodeIgniter__/index.php/user
+
+这个用来生成翻译用的csv文件。
+http://127.0.0.1/CodeIgniter__/index.php/Replace_lang

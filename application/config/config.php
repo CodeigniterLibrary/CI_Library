@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$_root = 'CodeIgniter__';
+$_root = 'CodeIgniter_cs';
 $config['base_url']	= "{$_SERVER['HTTP_HOST']}/{$_root}";
 
 $config['css']	=	"{$config['base_url']}/assets/css";

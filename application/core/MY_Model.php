@@ -45,6 +45,27 @@ class MY_Model extends CI_Model {
 		{
 			$pieces = explode($delimiter, $value);
 			$row = '';
+			for ($i=0; $i<count($pieces); ++$i)
+			{
+				$row .= ",{$this->db->escape($pieces[$i])}";
+			}
+			$arr_chkopt[] = substr($row, 1);
+		}
+		
+		return ' ('.implode(',', $arr_id).') in (('.implode('), (', $arr_chkopt).')) ';
+	}
+	
+	private function _opt_where2($arr_id, $chkopt, $delimiter=':')
+	{
+		(is_string($chkopt)) && $chkopt = array($chkopt);
+		
+		(is_string($arr_id)) && $arr_id = array($arr_id);
+		
+		$arr_chkopt = [];
+		foreach ($chkopt as $value)
+		{
+			$pieces = explode($delimiter, $value);
+			$row = '';
 			$i = 0;
 			foreach ($arr_id as $row_name)
 			{

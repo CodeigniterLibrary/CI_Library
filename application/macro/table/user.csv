@@ -1,0 +1,7 @@
+field,label,rules,,
+user_name,名称,required|min_length[5]|max_length[30]|no_email,add|is_unique[user.user_name],
+user_email,email,required|valid_email|max_length[100],add|is_unique[user.user_email],
+user_phone,手机,is_int|min_length[8]|max_length[14],add|is_unique[user.user_phone],edit|update_unique[user.user_phone.user_id.chkopt]
+user_attention[],爱好,integer|max_length[2],add,edit
+user_pass_conf,确认密码,required|matches[user_pass_conf],add,
+user_pass,密码,required|is_print|is_strong|min_length[8]|max_length[30],add,

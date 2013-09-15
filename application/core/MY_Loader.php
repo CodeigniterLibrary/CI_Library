@@ -130,9 +130,8 @@ class MY_Loader extends CI_Loader {
 				$controller = $segments[1];
 				$method = isset($segments[2]) ? $segments[2] : 'index';
 			}
-			// 子目录下有模块？
 			elseif (is_dir(APPPATH . 'modules/' . $segments[0] . '/' . $segments[1] . '/controllers'))
-			{
+			{// 子目录下有模块？
 				// Set the directory and remove it from the segment array
 				$path = $segments[0];
 				$segments = array_slice($segments, 1);

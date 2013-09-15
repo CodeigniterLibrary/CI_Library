@@ -5,11 +5,24 @@ class MY_Controller extends CI_Controller {
 	protected $_mvc = [];
 	protected $_arr_res = [];
 	
+	public function __construct()
+	{
+		parent::__construct();
+		
+		if (ENVIRONMENT === 'development')
+		{
+			session_start();
+			$_SESSION['is_xml_request'] = MY_Input::is_xml_request();
+			$_SESSION['_SERVER'] = $_SERVER;
+		};
+	}
+	
 	public function index()
 	{
-		// $tmpl = self::_get_smarty();
-		// $tmpl = self::_get_smarty();
-		// $tmpl->display('test/index2.tpl');
+//		$tmpl = self::_get_smarty();
+//		$tmpl = self::_get_smarty();
+//		$output = $tmpl->fetch('test/index2.tpl');
+//		$tmpl->display('test/index2.tpl');
 		$this->show();
 	}
 	

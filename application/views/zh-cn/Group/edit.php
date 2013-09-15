@@ -8,7 +8,6 @@
 		<noscript>
 		<input type="hidden" name="no_script" value="" />
 		</noscript>
-		<input type="hidden" name="group_name_is_unique" value="1" />
 		<div id="valid-msg">
 			<?php echo validation_errors(); ?>
 		</div>

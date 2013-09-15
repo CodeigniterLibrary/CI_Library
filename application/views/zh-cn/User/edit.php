@@ -8,10 +8,6 @@
 		<noscript>
 		<input type="hidden" name="no_script" value="" />
 		</noscript>
-		<input type="hidden" name="user_name_is_unique" value="1" />
-		<input type="hidden" name="user_email_is_unique" value="1" />
-		<input type="hidden" name="user_phone_is_unique" value="1" />
-		<input type="hidden" name="user_phone_is_up_unique" value="1" />
 		<div id="valid-msg">
 			<?php echo validation_errors(); ?>
 		</div>
